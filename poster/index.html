@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<title>画廊</title>
+<meta name="description" content="">
+<meta name="keywords" content="">
+<style>
+	*{padding:0;margin:0;}
+	body{background-color: #333;color:#555;font-family: 'Avenir Next','Lantinghei SC';font-size: 14px;-webkit-font-smoothing: antialiased;}
+
+	.wrap{
+		width:100%;
+		height: 100%;
+		position:absolute;
+		top:50%;
+		margin-top:-300px;
+		background-color: #333;
+		-webkit-perspective:800px;
+	}
+
+	/**海报**/
+	.photo{
+		width:260px;
+		height: 320px;
+		position:absolute;
+		box-shadow: 0 0 1px rgba(0,0,0,.01);
+		-webkit-transition:all 2s;
+	}
+	.photo .side{
+		width: 100%;
+		height: 100%;
+		background-color: #eee;
+		position:absolute;
+		top:0;
+		right: 0;
+		padding:20px;
+		box-sizing: border-box;
+	}
+	.photo .side-front{
+
+	}
+	.photo .side-front .image{
+			width:100%;
+			height:250px;
+			line-height:250px;
+			overflow:hidden;
+
+	}
+	.photo .side-front .image img{
+			width:100%;
+	}
+	.photo .side-front .caption{
+		text-align:center;
+		font-size: 16px;
+		line-height: 50px;
+	}
+	
+	.photo .side-back{
+		
+	}
+	.photo .side-back .desc{
+		color:#666;
+		font-size:14px;
+		line-height: 1.5em;
+	}
+
+	/**当前选中的图片**/
+	.photo_center{
+		width:50px;
+		height: 50px;
+		left:50%;
+		top:50%;
+		margin:-25px 0 0 -25px;
+		z-index: 999;
+
+	}
+	/**翻转**/
+	.photo-wrap{
+		position: absolute;
+		width: 100%;
+		height: 100%;
+		-webkit-transition: all .6s;
+		-webkit-transform-style:preserve-3d;
+	}
+	.photo-wrap .side-front{
+		-webkit-transform:rotateY(0deg);
+	}
+	.photo-wrap .side-back{
+		-webkit-transform:rotateY(180deg);
+	}
+	.photo-wrap .side{
+		-webkit-backface-visibility: hidden;
+	}
+	.photo_front .photo-wrap{
+		-webkit-transform:rotateY(0deg);
+	}
+	.photo_back .photo-wrap{
+		-webkit-transform:rotateY(180deg);
+	}
+</style>
+</head>
+<body onselectstart="return false;">
+    <div class="wrap">
+		<!--平移、旋转-->
+		<div class="photo photo_front" onclick="turn(this)" id="{{index}}">
+			<!--翻转-->
+			<div class="photo-wrap">
+				<div class="side side-front">
+					<p class="image"><img src="{{img}}"></p>
+					<p class="caption">{{caption}}</p>
+				</div>
+				<div class="side side-back">
+					<p class="desc">{{desc}}</p>
+				</div>
+			</div>
+        </div>
+    </div>
+    <script src="data.js"></script>
+    <script type="text/javascript">
+    /**
+     * rand数组
+	 */
+    function random(rand){
+    	var max = Math.max(rand[0],rand[1]);
+    	var min = Math.min(rand[0],rand[1]);
+    	var diff = max - min; // [1,5]  5-1 = 4
+    	var r = Math.random();
+    	var part = (diff+1);
+    	var splitNum = 1/part;
+    	if(r <= 1-splitNum && r >= splitNum){
+    		return Math.ceil(r*diff)+min;
+    	}else if(r > 1-splitNum){
+    		return max;
+    	}else{
+    		return min;
+    	}
+
+    }
+
+
+
+    function add(){
+    	var template = g('.wrap')[0].innerHTML;
+    	var html = [];
+
+    	for(s in data){
+    		_html = template.replace('{{img}}',data[s].img)
+    				.replace('{{index}}','photo_'+(parseInt(s)+1))
+    				.replace('{{caption}}',data[s].caption)
+    				.replace('{{desc}}',data[s].desc);
+    		html.push(_html);
+    	}
+    	g('.wrap')[0].innerHTML = html.join('');
+    }
+    	//1.翻面控制
+    	function turn(elem){
+    		var cls = elem.className;
+    		if(/photo_front/.test(cls)){
+    			cls = cls.replace(/photo_front/,'photo_back')
+    		}else{
+  				cls = cls.replace(/photo_back/,'photo_front')
+    		}
+    		return elem.className = cls;
+    	}
+
+//-------------------------------------------------------------------
+      //圆的配置
+      Circle.configs = {
+        R: 400,
+        classnamewrapper: '.wrap',
+        classname: '.photo'
+      }
+
+      //获取dom
+      function g(selector){
+        var method = selector.substr(0,1) == '.' ? 'getElementsByClassName' : 'getElementById';
+        return document[method](selector.substr(1));
+      }
+      //设置位置
+      function setPosition(){
+        var photos = g(Circle.configs.classname),
+            length = photos.length,
+            i, 
+            points = Circle.prototype.points;
+            for(i = 0; i < length; i++){
+                photos[i].style.left = (points[i].x-photos[0].clientWidth/2) + 'px';
+                photos[i].style.top = points[i].y + 'px';
+            }
+      }
+      function Circle(){}
+      (function initCircle(R){
+        var width,height,angle = 0,
+            pwrapper = g(Circle.configs.classnamewrapper)[0],
+            length = data.length,
+            i,
+            circle = new Circle(),
+            anglePart = 360 / (length);
+        width = pwrapper.clientWidth;
+        height = pwrapper.clientHeight;
+        Circle.part = 360 / data.length;
+        Circle.prototype.O = {
+            x: width/2,
+            y: height/2
+        };
+        Circle.prototype.R = R
+        Circle.prototype.points = [];
+        for (i = 0 ; i < length; i++) {
+           var x = R * Math.cos(angle * 2 * Math.PI/360) + circle.O.x;
+           var y = R * Math.sin(angle * 2 * Math.PI/360) + circle.O.y;
+           console.log()
+           circle.points.push({
+                x: x,
+                y: y,
+                angle: angle
+           });
+           angle += anglePart;
+        }
+
+      }(Circle.configs.R))
+
+
+      //旋转的角度
+      function setRolate(){
+            var photos = g(Circle.configs.classname),
+            length = photos.length,
+            i,
+            points = Circle.prototype.points;
+            for(i = 0; i < length; i++){
+                photos[i].style['-webkit-transform'] = 'rotate(' + points[i].angle + 'deg)';
+            }
+      }
+
+      //对象的深度复制
+      function extendsDeep(parent,child){
+        var i,tostr = Object.prototype.toString,
+            strarr = '[object Array]';
+            child = child || {};
+        for( i in parent){
+            if(parent.hasOwnProperty(i)){
+                if(typeof parent[i] == 'object'){
+                   child[i] = tostr.apply(parent[i],child[i]) == strarr ? [] : {};
+                   extendsDeep(parent[i],child[i]);
+               }else{
+                   child[i] = parent[i];
+               }
+            }
+        }
+        return child;
+      }
+
+      //改变圆上每个点 的坐标和图片角度
+      function change(){
+        var i,length = data.length,
+            points = Circle.prototype.points,
+            _t = extendsDeep(points[0]);
+
+        for(i = 1;i < length; i++){
+            points[i-1].angle += Circle.part;
+            points[i-1].x = points[i].x;
+            points[i-1].y = points[i].y;
+        }
+        points[length-1].angle += Circle.part;
+        points[length-1].x = _t.x;
+        points[length-1].y = _t.y;
+      }
+
+      add();
+        setPosition();
+        setRolate();
+        var timer = setInterval(function(){
+            change();
+            setPosition();
+            setRolate();
+        },1000)
+    </script>
+</body>
+</html>

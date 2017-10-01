@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<title>归并排序</title>
+<meta name="description" content="">
+<meta name="keywords" content="">
+<link href="" rel="stylesheet">
+<script src="merge.js"></script>
+<style>
+	div#container{
+		position: relative;
+		width:1000px;
+		height: 600px;
+		margin: 0 auto;
+		background: #eee;
+	}
+	div#container div{
+		position: absolute;
+		transition: all 0.2s ease;
+		bottom:50px;
+		width:50px;
+		line-height: 50px;
+		text-align: center;
+		float:left;
+		margin: 10px;
+		background: blue;
+		color:#fff;
+	}
+	div.shune{
+		background: red!important;
+		color:#eee!important;
+	}
+
+</style>
+</head>
+<body onload="start()">
+	<div style="cursor:pointer;margin:0 auto;width:200px;border:1px solid #ccc;text-align: center" id="start">开始归并排序</div>
+    <div id="container"></div>
+</body>
+<script type="text/javascript">
+	function start () {
+	var prefix = 'id_';
+	var num = 10;
+	arr = init_num(num);
+	copyarr = clone(arr);
+	var container = $('#container');
+	for(var i = 0 ; i < arr.length; i ++) {
+		var div = createElement('div');
+		div.style.height = arr[i]*5+'px';
+		div.style.lineHeight = arr[i]*5+'px';
+		div.innerHTML = arr[i];
+		container.appendChild(div);
+		divDom.push(div);
+	}
+			init_dom_class(divDom);
+	$('#start').onclick = function(){
+		sort(arr)
+		step2()
+	}
+
+
+}
+
+</script>
+</html>

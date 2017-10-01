@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<title>Examples</title>
+<meta name="description" content="">
+<meta name="keywords" content="">
+<link href="" rel="stylesheet">
+<style>
+	html,body{
+		height: 100%;
+		width: 100%;
+	}
+	.photo-wrapper{
+		position: relative;
+		width:100%;
+		height: 100%;
+	}
+	.photo{
+		width:180px;
+		height: 180px;
+		position: absolute;
+		-webkit-transition: all 1s;
+	}
+	img{
+		width:100%;
+		height: 100%;
+	}
+
+</style>
+</head>
+<body>
+		<div class="photo-wrapper">
+			<div class="photo">
+			<img class="img" src="{{img}}">
+			</div>
+		</div>
+    <script src="data.js"></script>
+    <script>
+      Circle.configs = {
+      	R: 360,
+      	classnamewrapper: '.photo-wrapper',
+      	classname: '.photo'
+      }
+      function g(selector){
+      	var method = selector.substr(0,1) == '.' ? 'getElementsByClassName' : 'getElementById';
+      	return document[method](selector.substr(1));
+      }
+      function setPosition(){
+      	var photos = g(Circle.configs.classname),
+      		length = photos.length,
+      		i, 
+      		points = Circle.prototype.points;
+      		for(i in photos){
+      			if(photos.hasOwnProperty(i)){
+	      			var _photo = '';
+				photos[i].style.left = (points[i].x-photos[0].clientWidth/2) + 'px';
+      			photos[i].style.top = points[i].y + 'px';
+      			}
+
+    		}
+      }
+      function Circle(){}
+
+
+      function anonymous(){
+           var photo = g(Circle.configs.classnamewrapper)[0].innerHTML,
+           	     length = data.length,
+           	     _html = [];
+     		 for(var i = 0; i < length; i++){
+     		 	_html.push(photo.replace('{{img}}',data[i].img))
+     		 } 	
+   			 g(Circle.configs.classnamewrapper)[0].innerHTML = _html.join('');
+
+      }
+      (function initCircle(R){
+      	var width,height,angle = 0,
+      		pwrapper = g(Circle.configs.classnamewrapper)[0],
+      		length = data.length,
+      		i,
+      		circle = new Circle(),
+   	        anglePart = 360 / length;
+      	width = pwrapper.clientWidth;
+        height = pwrapper.clientHeight;
+        Circle.prototype.O = {
+        	x: width/2,
+        	y: height/2
+        };
+        Circle.prototype.R = R
+        Circle.prototype.points = [];
+        for (i = 0 ; i < length; i++) {
+           var x = R * Math.cos(angle * 2*Math.PI/360) + circle.O.x;
+           var y = R * Math.sin(angle * 2*Math.PI/360) + circle.O.y;
+           circle.points.push({
+           		x: x,
+           		y: y,
+           		angle: angle
+           });
+           angle += anglePart;
+        }
+
+      }(600))
+
+      function setRolate(){
+			var photos = g(Circle.configs.classname),
+      		length = photos.length,
+      		i,
+      		points = Circle.prototype.points;
+      		for(i in photos){
+      			if(photos.hasOwnProperty(i)){
+	      			photos[i].style['-webkit-transform'] = 'rotate(' + points[i].angle + 'deg)';
+
+      			}
+
+    		}
+      }
+      function changePosition () {
+      	var _circle = new Circle(),
+      	points = _circle.points,
+      	length = points.length;
+   		var _t = points[0];
+      	for (var i = 0; i < length; i++) {
+   
+      		 points[i] = points[i+1];
+
+      	}
+      	points[length-1] = _t;
+      	console.log(points)
+      }
+      	      anonymous()
+      function startMove() {
+
+	      setPosition();
+	      setRolate();
+	      changePosition();
+      }
+      console.log('------')
+      console.log(new Circle())
+      console.log(new Circle())
+     setInterval(startMove,500)
+    </script>
+</body>
+</html>

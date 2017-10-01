@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<title>Examples</title>
+<meta name="description" content="">
+<meta name="keywords" content="">
+<link href="" rel="stylesheet">
+<style>
+	h1,.wrapper{
+		text-align:center;
+		width:600px;
+		margin: 0 auto;
+	}
+	a{
+		color:#fff;
+		text-decoration: none;
+	}
+	.item{
+		width:100px;
+		height:150px;
+		line-height: 150px;
+		background: #555;
+		padding:5px #fff;
+		border: 5px solid #ccc;
+		margin:5px;
+		float: left;
+		-webkit-transition:all 0.5s;
+
+	}
+</style>
+</head>
+<body>
+    <h1>js代码</h1>
+    <div class="wrapper">
+
+	    <div class="item"><a href="./图片预加载/index.html">图片预加载</a></div>
+	    	    <div class="item good"><a href="./poster/index.html">海报</a></div>
+	    <div class="item"><a href="./轮播图/index.html">轮播图</a></div>
+	    <div class="item"><a href="./算法/快速排序/index.html">算法</a></div>
+    </div>
+    <script>
+
+    	setInterval(()=>{
+    		var good = document.getElementsByClassName('good')[0];
+    		console.dir(good)
+    		if(!good.style.width || good.style.width != '150px'){
+    		    	good.style.width = '150px'
+    				good.style.height = '225px';
+    				good.style.lineHeight = '225px';
+    		}else{
+   					good.style.width = '100px'
+    				good.style.height = '150px';
+    				good.style.lineHeight = '150px';
+    		}
+
+    	},1200);
+
+    </script>
+</body>
+</html>

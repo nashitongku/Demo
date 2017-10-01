@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<title>轮播图</title>
+<meta name="description" content="">
+<meta name="keywords" content="">
+<link href="" rel="stylesheet">
+<link href="./css/index.css" rel="stylesheet">
+</head>
+<body>
+    <div id="wrapper">
+		<img style="width:100%;height: 500px" src="./image/a.jpg" alt="">
+		<img style="width:100%;height: 500px" src="./image/b.jpg" alt="">
+		<img style="width:100%;height: 500px" src="./image/c.jpg" alt="">
+    </div>
+
+<script src="./js/jquery-3.2.1.min.js"></script>
+<script src="./js/banner.js"></script>
+<script>
+
+	arrImg = $('#wrapper img');
+	var opts = {
+		time: 1000,		  //一张图片切换的总时间
+		residence: 1000 //一张图片切换之后停留的时间
+	}
+	$.banner(arrImg,opts);
+</script>
+</body>
+</html>
