@@ -1,15 +1,65 @@
+
+var testData = [3,2,5,7,4,6,32,2];
+function quickSort2(data,setData,start=0,end=data.length-1){
+	data = clone(data)
+	var firstData = data[start],
+		mid = Math.floor((start + end) / 2),
+		i=start,
+		j = end,
+		biggerData = data[++i],
+		smallerData = data[j];
+		for(;i < j;){
+			biggerData = data[i];
+			smallerData = data[j];
+			if(smallerData < firstData){
+				if(biggerData > firstData){
+					data[i] = smallerData;
+					data[j] = biggerData;
+					setData(clone(data), i ,j)
+				}else{
+					i ++;
+				}
+			}else{
+				j --;
+			}
+		}
+		
+		if(data[start] > data[j]){
+			var temp = data[start];
+			data[start] = data[j];
+			data[j] = temp;
+			setData(clone(data), start ,j)
+		}
+			
+		if(start >= end-1){
+			return;
+		}
+		console.log(start,end,j)
+		quickSort(data,setData,start,j-1);
+		quickSort(data,setData,j+1,end);
+		
+		return data;
+}
+
+function clone(e){
+	var array = []
+	for(var i = 0; i < e.length; i ++){
+		array.push(e[i])
+	}
+	return array;
+}
+
+
+
+
 /**
  * 快速排序
  * @authors Your Name (you@example.org)
  * @date    2017-06-19 09:51:08
  * @version $Id$
  */
-//[6,10,7,8,9]
-var arr = [6,8,10,11,5,3,7]
-console.log(arr)
-quickSort(arr,0,arr.length-1);
-console.log(arr);
-function quickSort(nums,left,right){
+function quickSort(nums,setData,left=0,right=nums.length-1){
+	console.log(left,right)
 	if(left > right){
 		return;
 	}
@@ -24,12 +74,13 @@ function quickSort(nums,left,right){
 			var t = nums[j];
 			nums[j] = nums[i];
 			nums[i] = t;
-				console.log(i+" i  :   j:"+j)
+			setData(clone(nums), i ,j)
 		}
 	}
 	nums[left] = nums[i];
 	nums[i] = temp;
-
-	quickSort(nums,left,i-1);
-	quickSort(nums,i+1,right);
+	setData(clone(nums), left ,i)
+	quickSort(nums,setData,left,i-1);
+	quickSort(nums,setData,i+1,right);
+	return nums;
 }    
